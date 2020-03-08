@@ -7,7 +7,7 @@ Our project focuses on finding the optimal percentage of shots taken from 3 in a
 # Motivation:
 The NBA shoots more three pointers each year. Starting around 2012 the number of 3 point Attempts per 100 possesions has been rapidly increasing. The expected value of the 3 pointer did not drop significantly even though there have been more attempts. This raises the question when will the percentage of 3 point shots plateau.
 
-                           |
+Expected Value             | Attempts
 :-------------------------:|:-------------------------:
 <img width="442" alt="Screen Shot 2020-03-08 at 2 07 50 PM" src="https://user-images.githubusercontent.com/46733087/76171242-3bf8fd80-6146-11ea-9d48-ed6bc17a1942.png"> |  <img width="326" alt="Screen Shot 2020-03-08 at 2 07 56 PM" src="https://user-images.githubusercontent.com/46733087/76171252-59c66280-6146-11ea-83bb-63941ee6fe6d.png">
 
