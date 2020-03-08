@@ -8,7 +8,7 @@ Our project focuses on finding the optimal percentage of shots taken from 3 in a
 The NBA shoots more three pointers each year. Starting around 2012 the number of 3 point Attempts per 100 possesions has been rapidly increasing. The expected value of the 3 pointer did not drop significantly even though there have been more attempts. This raises the question when will the percentage of 3 point shots plateau.
 
 # Methodology - Data:
-We gathered basketballreference.com data
+We gathered basketballreference.com and nba.com data
 
 # Methodology - Data Analysis:
 Since the introduction of the three point shot in 1979 the number of three point attempts steadily increased until roughly 2010 when there was a sudden dramatic rise in three point attempts which has continued to this day.To examine why three point attempts have been on the rise, we first looked at the expected value of both threes and twos over time using data from Basketball Reference. We cross-referenced these plots with a list of rule changes to see what trends could be explained by new rules. 
