@@ -1,0 +1,169 @@
+import numpy as np
+import math
+#import matplotlib.pyplot as plt
+import seaborn as sns;
+#sns.set()
+#%matplotlib inline
+
+#defense gives the fraction of the defenses efforts that are going to defend the 3
+#So .3 for defense just means that .3 of the total defensive efforts are used to stop the 3
+def shoota3(defense):
+    wideopen = .5 #this means if the defense uses no effort in gaurding the 3, he makes it .5 of the time
+    cgaurded = .2 #if it is completely gaurded
+    #this next thing just simulates the shot when the defensive effort is taken into account
+    if(np.random.rand()<(wideopen-((wideopen-cgaurded)*defense))):
+        #the three is made
+        return(1)
+    else:
+        #the three is missed
+        return(0)
+
+#defense gives the fraction of the defenses efforts that are going to defend the 3
+def shoota2(defense):
+    wideopen = .8
+    cgaurded = .4
+    if(np.random.rand()<(wideopen-((wideopen-cgaurded)*defense))):
+        return(1)
+    else:
+        return(0)
+
+
+    
+def game():
+    history = []#keeps a log of what happened
+    
+    position = 1 #position 0 means hes gonna shoot a 3 next. Position 1 means hes gonna shoot a 2.
+    
+    score = 0 #the number of points the offensive player has scored
+    
+    plays = 0 #the number of plays that have happened
+    
+    threedef = .1 #this is the fraction of efforts devoted to gaurding the 3
+    
+    twodef = .9 #the fraction devoted to gaurding the 2
+    
+    threeprob = .1 #the probability the offense shoots a 3
+    
+    twoprob = .9 #the probability the offense shoots a 2
+    
+    threesattempted = 0.000001 #this should be zero but cant divide by zero
+    
+    threesmade = 0.0 #the number of 3s made
+    
+    twosattempted = 0.000001 #this should be zero but cant divide by zero
+    
+    twosmade = 0.0 #the number of 2s made
+    
+    tprec = []
+    
+    playsrec = []
+    
+    tplays = 10000
+    
+    for i in range(tplays): #does a bunch of plays
+        skill = 1 - (math.log(i+1)/math.log(tplays))
+        tprec.append(threeprob)
+        playsrec.append(plays)
+        expofthree = (threesmade/threesattempted)*3 #updates the exp of a 3
+        expoftwo = (twosmade/twosattempted)*2 #updates the exp of a 2
+        #If the exp of a two and a 3 are really close the defense doesnt modify its strategy
+        #If the exp of a 3 is higher then the exp of a 2 the defense gaurds the 3 better
+        #same thing for 2s
+        if(threedef > 1):
+            threedef = 1
+            twodef = 0
+        if(threedef < 0):
+            threedef = 0
+            twodef = 1
+        if(twoprob > .95):
+            twoprob = .95
+            threeprob = .05
+        if(twoprob < .05):
+            twoprob = .05
+            threeprob = .95
+            
+        if(abs(expofthree-expoftwo)>0 and i%500 == 1): #this is updating the defense
+            if(expofthree>expoftwo):
+                threedef = threedef + (.01*(abs(expofthree-expoftwo)/(expofthree+expoftwo)))
+                twodef = twodef - (.01*(abs(expofthree-expoftwo)/(expofthree+expoftwo)))
+            else:
+                threedef = threedef - (.01*(abs(expofthree-expoftwo)/(expofthree+expoftwo)))
+                twodef = twodef + (.01*(abs(expofthree-expoftwo)/(expofthree+expoftwo)))
+                    
+        #this is updating the offense
+        #I just set a limit that we cant shoot more than 95% of our shots from 2 or 3 to prevent chaotic spiral
+        if(abs(expofthree-expoftwo)>0 and i%500 == 1): 
+            if(expofthree>expoftwo):
+                threeprob = threeprob + (.01*(abs(expofthree-expoftwo)/(expofthree+expoftwo)))
+                twoprob = twoprob - (.01*(abs(expofthree-expoftwo)/(expofthree+expoftwo)))
+            else:
+                threeprob = threeprob - (.01*(abs(expofthree-expoftwo)/(expofthree+expoftwo)))
+                twoprob = twoprob + (.01*(abs(expofthree-expoftwo)/(expofthree+expoftwo)))
+        
+        if(position == 0):
+            if(shoota3(threedef) == 1):
+                score = score + 3
+                plays = plays + 1
+                if(threeprob > np.random.rand()):
+                    position = 0
+                else:
+                    position = 1
+                history.append("made3")
+                threesattempted = threesattempted + 1
+                threesmade = threesmade + 1
+            else:
+                plays = plays + 1
+                history.append("missed3")
+                if(threeprob > np.random.rand()):
+                    position = 0
+                else:
+                    position = 1
+                threesattempted = threesattempted + 1
+                
+        else:
+            if(shoota2(twodef) == 1):
+                score = score + 2
+                plays = plays + 1
+                if(threeprob > np.random.rand()):
+                    position = 0
+                else:
+                    position = 1
+                history.append("made2")
+                twosattempted = twosattempted + 1
+                twosmade = twosmade + 1
+            else:
+                plays = plays + 1
+                history.append("missed2")
+                if(threeprob > np.random.rand()):
+                    position = 0
+                else:
+                    position = 1
+                twosattempted = twosattempted + 1
+    print("3 defense")
+    print(threedef)
+    print("2 defense")
+    print(twodef)
+    print("expected value of a 3")
+    print(expofthree)
+    print("exp of a 2")
+    print(expoftwo)
+    print("prob of 3")
+    print(threeprob)
+    print("prob of 2")
+    print(twoprob)
+    
+    #if you run it a couple times youll see that even on 999999 plays the defense doesnt have a consistent strategy
+    #the exp of the 2 and 3 converge to 1.2ish
+  #  sns.scatterplot(x="plays", y="threeprob")
+    sns.scatterplot(x=playsrec, y=tprec)
+    
+game()
+   # time =[]
+  #  prob_3 = []
+    
+  #  sns.scatterplot(x=time, y=prob_3)
+    
+  #  tprec = []
+    
+  #  playsrec
+#((500*math.ceil(((tplays+3)-i)/tplays))+200)
