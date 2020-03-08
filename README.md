@@ -22,11 +22,13 @@ We developed a Stochastic simulation based on the data of 3 point and two point 
   The simulation simulates a bunch of plays where the offense either shoots a two or a three depending on a random number generator. In the begining the offense has a 10% chance to shoot a 3 and a 90% chance to shoot a 2. Initially the defense is initially focusing 90% of its efforts on the 2 pointer and 10% on the 3 pointer. After 1000 plays the offense and defense both update their strategies. If the expected value of the three pointer is greater than the expected value of the two pointer then the offense will shoot slightly more three pointers and vice versa. If the expected value of the three pointer is greater than the expected value of the two pointer then the defense will put slightly more of their effort on guarding the three pointer and vice versa. If the two expected values are very close the offense and defense will only slightly change their strategies but if the expected values are far apart they will change their strategies more aggresively. So eventaully the offense will find its best strategy and the defense will find its best strategy and there will be an equilibrium.
 
 # Key Results:
+## Simulation:
 This is a graph with the number of plays on the x-axis and the fraction of shots from three on the y-axis. We can see that it seems to be converging to shooting around 42% of the shots from three.
 <img width="460" alt="Screen Shot 2019-12-24 at 2 42 20 PM" src="https://user-images.githubusercontent.com/46733087/76170755-1ff35d00-6142-11ea-8c5c-fed41c0ec076.png">
 
 We see the offense and defense are in a kind of dance where the offense overadjusts and then the defense adjusts and gets pulled back down and on and on. 
 
+## Data Analysis:
 
 ![image](https://user-images.githubusercontent.com/47067688/76171194-cbea7780-6145-11ea-8226-7e18b76a2d8e.png)
 
