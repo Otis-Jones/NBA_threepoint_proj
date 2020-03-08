@@ -24,6 +24,8 @@ We developed a Stochastic simulation based on the data of 3 point and two point 
 ## Methodology - Time Series: 
 We attempted to forecast the future of the NBA 3 Point Shot through time series analysis. Our data of interest was the percentage of shots that were 3 pointers of each NBA season since the 3 point line was added in 1979. We excluded the 2019-2020 season because the season is still in progress at the time of this project.
 
+![image](https://user-images.githubusercontent.com/51941454/76173011-a4e97100-6158-11ea-97e1-0e9d7fb14ac5.png)
+
 We created two datasets, a training set with the observations from 1979 - 2016 and a test set of all observations (1979 - 2019). Our goal was to create an ARIMA model of the training set, forecast until 2019, and compare it to the test set. If our model was accurate, then we would forecast the next few years.
 
 We employed a Box-Cox transformation on our data in an attempt to stabilize variance. This slightly increased our variance, but we found that the Box-Cox transformed data yielded more accurate forecasts, when compared to the test set.
