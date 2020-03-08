@@ -27,6 +27,23 @@ This is a graph with the number of plays on the x-axis and the fraction of shots
 We see the offense and defense are in a kind of dance where the offense overadjusts and then the defense adjusts and gets pulled back down and on and on. 
 
 
+![image](https://user-images.githubusercontent.com/47067688/76171194-cbea7780-6145-11ea-8226-7e18b76a2d8e.png)
+
+The number of three-point attempts per 100 possessions went up dramatically from 1994-1996. This can be attributed in part to the rule change that occured in the 1994-95 season, where the three-point line was shortened to a uniform 22 feet around the basket. In 1997, the number of three-point attempts decreased. This can most likely be attributed to the rule change that occured in the 1997-98 season, where the three-point line was lengthened to its original distance of 23 feet, nine inches, except in the corners, where the distance remained 22 feet. 
+
+
+![image](https://user-images.githubusercontent.com/47067688/76171198-d3118580-6145-11ea-836b-b834adcfef22.png)
+
+
+By looking at these two plots we noticed two key points:
+
+1.The expected value of threes since about 1995 has been between 1.0 and 1.1 points per attempt whereas the expected value of twos has remained under 1 point per attempt for much of the past 30 years, making the three point shot the more efficient shot by points per attempt.
+
+2. While the expected value of a 3pt shot has remained fairly consistent since around 2000, the expected value of a 2pt shot has fluctuated dramatically.The apparent drop in the expected value of two-point shots during the year 2000 can partially be attributed to the NBA lock-out that occurred in 1999. During the lockout, the players did not attend training camp, which undoubtedly negatively affected the points scored per 100 possessions and the expected value of a 2-point shot. The expected value of the two point shot has been increasing quite rapidly since about 2011, the same time period where we see the dramatic rise of three point attempts start to take place.
+
+Based on these observations we hypothesize that a shift from the current strategy of taking more threes might take place when the expected value of a 2pt shot exceeds the expected value of a 3 pt shot. To further illustrate this point, the ratio of the expected value of 3pt shots to the expected value of 2pt shots is plotted below with a value over one representing the three point shot having a higher expected value.
+
+![image](https://user-images.githubusercontent.com/47067688/76171201-da389380-6145-11ea-84af-16ce44a4bf36.png)
 
 
 # Summary:
