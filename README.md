@@ -10,6 +10,10 @@ The NBA shoots more three pointers each year. Starting around 2012 the number of
 
 <img width="326" alt="Screen Shot 2020-03-08 at 2 07 56 PM" src="https://user-images.githubusercontent.com/46733087/76171252-59c66280-6146-11ea-83bb-63941ee6fe6d.png">
 
+Solarized dark             |  Solarized Ocean
+:-------------------------:|:-------------------------:
+<img width="442" alt="Screen Shot 2020-03-08 at 2 07 50 PM" src="https://user-images.githubusercontent.com/46733087/76171242-3bf8fd80-6146-11ea-9d48-ed6bc17a1942.png"> |  <img width="326" alt="Screen Shot 2020-03-08 at 2 07 56 PM" src="https://user-images.githubusercontent.com/46733087/76171252-59c66280-6146-11ea-83bb-63941ee6fe6d.png">
+
 # Methodology - Data:
 We gathered basketballreference.com and nba.com data
 
