@@ -22,7 +22,21 @@ We developed a Stochastic simulation based on the data of 3 point and two point 
   The simulation simulates a bunch of plays where the offense either shoots a two or a three depending on a random number generator. In the begining the offense has a 10% chance to shoot a 3 and a 90% chance to shoot a 2. Initially the defense is initially focusing 90% of its efforts on the 2 pointer and 10% on the 3 pointer. After 1000 plays the offense and defense both update their strategies. If the expected value of the three pointer is greater than the expected value of the two pointer then the offense will shoot slightly more three pointers and vice versa. If the expected value of the three pointer is greater than the expected value of the two pointer then the defense will put slightly more of their effort on guarding the three pointer and vice versa. If the two expected values are very close the offense and defense will only slightly change their strategies but if the expected values are far apart they will change their strategies more aggresively. So eventaully the offense will find its best strategy and the defense will find its best strategy and there will be an equilibrium.
   
 ## Methodology - Time Series: 
-klj;j;lj
+We attempted to forecast the future of the NBA 3 Point Shot through time series analysis. Our data of interest was the percentage of shots that were 3 pointers of each NBA season since the 3 point line was added in 1979. We excluded the 2019-2020 season because the season is still in progress at the time of this project.
+
+We created two datasets, a training set with the observations from 1979 - 2016 and a test set of all observations (1979 - 2019). Our goal was to create an ARIMA model of the training set, forecast until 2019, and compare it to the test set. If our model was accurate, then we would forecast the next few years.
+
+We employed a Box-Cox transformation on our data in an attempt to stabilize variance. This slightly increased our variance, but we found that the Box-Cox transformed data yielded more accurate forecasts, when compared to the test set.
+
+We concluded that our time series was not seasonal, but there is a clear upward trend, implying that the percentage of shots that are from the 3 point line is increasing.
+
+We differenced our data at a lag value of 1, once at a time until our time series resembled white noise. From there, we examined several ACF and PACF plots in order to identify any preliminary models. Ultimately, we decided to automate this process, using the auto.arima() function in R. We settled on an ARIMA(0,1,2) model.
+
+We ran diagnostics testing to see if our model was accurate. The residuals were normally distributed and resembled white noise, so we decided to use this model.
+
+We plotted our forecasts against the test set observations. We found that they matched fairly well.
+
+Once we began forecasting several years into the future, we noticed a particular phenomenon. The forecasts converged to a nonzero, constant value, namely 0.35. This supports our hypothesis that the 3 point shot percentage will eventually converge to an equilibrium point.
 
 # Key Results:
 ## Key Results - Simulation:
@@ -52,7 +66,9 @@ Based on these observations we hypothesize that a shift from the current strateg
 ![image](https://user-images.githubusercontent.com/47067688/76171201-da389380-6145-11ea-84af-16ce44a4bf36.png)
 
 ## Key Results - Time Series:
-kjjlk;jl;jl;j
+Our model suggests that the NBA 3 point shot percentage will eventually converge to a nonzero, constant value of 35%. 
+
+Our model could be improved simply by training our model on more data. Since there's only been about 40 years since the 3 point line was added, this limits the amount of data we can use. Regardless, our model suggests that the percentage of shots taken from the 3 point line will continue to rise slightly in the next couple years and then likely converge to a point where it's no longer beneficial to increase the number of 3's taken.
 
 # Summary:
 For our project we wanted to analyze the role that the three point shot plays in the modern NBA. We used a Stochastic model to simulated a basketball plays and allowed the offense and defense to find the best strategy, it looks like shooting 42% of your shots from 3 is the best strategy. We expect the league to continue to shoot more 3s until the 2pt shot becomes more valuable.
