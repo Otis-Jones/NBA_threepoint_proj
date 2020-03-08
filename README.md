@@ -55,8 +55,9 @@ Based on these observations we hypothesize that a shift from the current strateg
 kjjlk;jl;jl;j
 
 # Summary:
+For our project we wanted to analyize the role that the three point shot plays in the modern NBA. We used a Stochastic model to simulated a basketball plays and allowed the offense and defense to find the best strategy, it looks like shooting 42% of your shots from 3 is the best strategy. 
 
 
 # Future Work:
-
+Do further work looking at the convergence of the Stochastic Model.
 
