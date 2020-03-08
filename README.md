@@ -36,6 +36,8 @@ We differenced our data at a lag value of 1, once at a time until our time serie
 
 We ran diagnostics testing to see if our model was accurate. The residuals were normally distributed and resembled white noise, so we decided to use this model.
 
+![image](https://user-images.githubusercontent.com/51941454/76173032-c5193000-6158-11ea-9ea1-e47a4ec9db9b.png)
+
 We plotted our forecasts against the test set observations. We found that they matched fairly well.
 
 Once we began forecasting several years into the future, we noticed a particular phenomenon. The forecasts converged to a nonzero, constant value, namely 0.35. This supports our hypothesis that the 3 point shot percentage will eventually converge to an equilibrium point.
