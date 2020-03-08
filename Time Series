@@ -1,1 +1,283 @@
-Insert code
+```{r Load Packages}
+# Load packages:
+
+library(MASS)
+library(forecast)
+library(tseries)
+library(astsa)
+library(dse)
+library(knitr)
+library(gridExtra)
+library(grid)
+library(tidyverse)
+library(MAPA)
+```
+
+```{r Create Datasets and Visualize}
+#lbjmvp<-read.csv(file = 'sportsref_download.csv',
+#                 header = TRUE, sep = ',', skip = 1)
+
+#Remove last few entries for training.
+trainset <- lbjmvp %>% 
+  select(Season, X3PA, FGA) %>%
+  mutate(percentageof3=X3PA/FGA) %>%
+  filter(Season!='2019-20',Season!='2018-19',Season!='2017-18') %>%
+  filter(!is.na(X3PA)) %>%
+  arrange(-row_number())
+#length(trainset)
+
+#Full data. Subtract 2019-2020 season, since it's not over yet.
+testset <- lbjmvp %>% 
+  select(Season, X3PA, FGA) %>%
+  mutate(percentageof3=X3PA/FGA) %>%
+  filter(Season!='2019-20') %>%
+  filter(!is.na(X3PA)) %>%
+  arrange(-row_number())
+#length(thebenchstart)
+
+trainset<-trainset[,4]
+#trainset
+
+testset<-testset[,4]
+#testset
+
+ts.plot(testset, ylab = "Percentage of Shots Taken that are 3",
+        xlab = "Years since 1979")
+title(expression(Percentage~of~3~Point~Shots~Taken~From~1979~-~Present))
+#Data does not appear to display seasonality.
+```
+
+```{r Create Time Series}
+trainset.ts <- ts(trainset, frequency = 1)
+testset.ts <- ts(testset, frequency = 1)
+#Initial look at ACF and PACF plots.
+acf(trainset.ts, lag.max =20,main = "" ) 
+pacf(trainset.ts, lag.max=20, main = "")
+```
+
+```{r BoxCox Transformations}
+#Perhaps variance needs stabilizing?
+bctrainset <- boxcox(trainset.ts~as.numeric(1:length(trainset)))
+lambda1 <- bctrainset$x[which.max(bctrainset$y)]
+lambda1
+#Lambda is 0.989899
+trainset.tr <- trainset.ts^(0.989899)
+ts.plot(trainset.tr, ylab = "Three Point FGA BoxCox",
+        xlab = "Years Since 1979", 
+        main = "Box Cox Transformed Data")
+
+var(trainset.ts)
+#0.007339486
+var(trainset.tr)
+#0.007496046
+#Slight increase in variance, but we will allow this for now.
+```
+
+```{r Differencing}
+#There appears to be no seasonality, so we will difference to remove trend.
+
+trainsetdiff1 <- diff(trainset.tr, lag =1) #Difference once and observe.
+var(trainsetdiff1)
+#0.0002683378
+#ts.plot(trainsetdiff1, ylab = "Differenced At Lag 1") 
+#We want it to resemble white noise.
+#abline(lm(trainsetdiff1~as.numeric(1:length(trainsetdiff1))), 
+#       col ="red") 
+
+trainsetdiff1diff1 <- diff(trainsetdiff1, lag =1)
+var(trainsetdiff1diff1)
+#0.0004814831
+#ts.plot(trainsetdiff1diff1, ylab = "Differenced At Lag 1")
+#abline(lm(trainsetdiff1diff1~as.numeric(1:length(trainsetdiff1diff1))), 
+#       col ="red")
+
+par(mfrow=c(1,2))
+ts.plot(trainsetdiff1, ylab = "Differenced At Lag 1")
+abline(lm(trainsetdiff1~as.numeric(1:length(trainsetdiff1))), 
+       col ="red")
+ts.plot(trainsetdiff1diff1, ylab = "Differenced At Lag 1, Lag 1")
+abline(lm(trainsetdiff1diff1~as.numeric(1:length(trainsetdiff1diff1))), 
+       col ="red")
+
+#Differencing twice may work!
+```
+
+```{r More Differencing?}
+#Perhaps more differencing may be useful? 
+#In general, it's best to not overdifference... but this may provide useful insight!
+
+trainsetdiff1diff1diff1 <- diff(trainsetdiff1diff1, lag =1)
+var(trainsetdiff1diff1diff1)
+#0.001511063  Too high?
+ts.plot(trainsetdiff1diff1diff1, 
+        ylab = "Differenced At Lag 1, Lag 1, Lag 1")
+abline(lm(trainsetdiff1diff1diff1~
+            as.numeric(1:length(trainsetdiff1diff1diff1))), 
+       col ="red")
+
+trainsetdiff1diff1diff1diff1 <- diff(trainsetdiff1diff1diff1, lag =1)
+var(trainsetdiff1diff1diff1diff1)
+#0.005547701  Too high?
+ts.plot(trainsetdiff1diff1diff1diff1, 
+        ylab = "Differenced At Lag 1, Lag 1, Lag 1, Lag 1")
+abline(lm(trainsetdiff1diff1diff1diff1~
+            as.numeric(1:length(trainsetdiff1diff1diff1diff1))), 
+       col ="red")
+
+trainsetdiff1diff1diff1diff1diff1 <- diff(trainsetdiff1diff1diff1diff1, lag =1)
+var(trainsetdiff1diff1diff1diff1diff1)
+#0.02145416  Too high!
+ts.plot(trainsetdiff1diff1diff1diff1diff1, 
+        ylab = "Differenced At Lag 1, Lag 1, Lag 1, Lag 1, Lag 1")
+abline(lm(trainsetdiff1diff1diff1diff1diff1~
+            as.numeric(1:length(trainsetdiff1diff1diff1diff1diff1))), 
+       col ="red")
+
+#The data may be overdifferenced, but it clearly resembles white noise!
+#More analysis is needed.
+```
+
+```{r Preliminary Model Identification}
+# Differenced at lag 1 PACF AND ACF
+par(mfrow=c(1,2))
+acf(trainsetdiff1, lag.max = 24, main = "")
+pacf(trainsetdiff1, lag.max = 24, main = "")
+
+# DIFFERENCED at lag 1 and lag 1 and lag 1 PACF AND ACF
+par(mfrow=c(1,2))
+acf(trainsetdiff1diff1diff1, lag.max=24, main = "")
+pacf(trainsetdiff1diff1diff1, lag.max=24, main = "")
+
+# S = 0, no seasonality.
+# D = 0, d = 3, differenced 3x to remove trend
+# Examine at lag = 1,2,3,4,5,...
+# ACF plot tails off(q = 0) 
+# and PACF cuts off after lag 4 (p = 4) ----> ARIMA(4,3,0)?
+# Or, perhaps ACF cuts off at lag 4 (q = 4) 
+# and PACF tails off (p = 0) -> ARIMA(0,3,4)?
+# More analysis is needed. 
+# We will consider multiple models and choose the best one.
+```
+
+```{r Consider Possible Models}
+#We want the lowest possible AICc values.
+
+mod <- Arima(trainset.tr, order = c(4,3,0)) #AICc ARIMA(4,3,0) -160.6
+mod
+
+mod2 <- Arima(trainset.tr, order = c(0,3,4)) #AICc ARIMA(0,3,4) -169.5
+mod2
+
+#Slight adjust to consider more models.
+
+mod3 <- Arima(trainset.tr, order = c(4,2,0)) #AICc ARIMA(4,2,0) -182.1
+mod3
+
+mod4 <- Arima(trainset.tr, order = c(0,2,4)) #AICc ARIMA(0,2,4) -186.2
+mod4
+
+#We have multiple models to consider. But the auto.arima() function
+#may give us an even better recommendation.
+```
+
+```{r Automate Model Recommendation}
+modauto<-auto.arima(trainset.tr,seasonal = FALSE,
+                    stepwise = FALSE,
+                    approximation = FALSE,
+                    allowdrift = FALSE)
+modauto #AICc ARIMA(0,1,2) -193.8 Lowest one yet!
+
+finalmod <- Arima(trainset.tr, order = c(0,1,2))
+finalmod
+```
+
+```{r Check Diagnostics of Final Model}
+ts.plot(finalmod$residuals, main = "Model Residuals") 
+#Resembles white noise.
+checkresiduals(finalmod) 
+#Residuals are normally distributed.
+autoplot(finalmod) 
+#Roots lie within unit circle. Implies stationarity and invertibility.
+qqnorm(finalmod$residuals, main = "Normal QQ Plot for Model")
+qqline(finalmod$residuals)
+#Residuals are normally distributed.
+```
+
+```{r Plot Predictions}
+modelpredictions <- predict(finalmod, n.ahead=2)
+
+upperbound <- modelpredictions$pred + 2*modelpredictions$se 
+lowerbound <- modelpredictions$pred - 2*modelpredictions$se
+
+ts.plot(trainset, 
+        xlim=c(1, length(trainset)+5), 
+        ylim=c(0,0.5), 
+        main = "Forecasting on Data", 
+        ylab= "% of 3PT FGA")
+
+lines(upperbound, col="blue", lty = "dashed")
+lines(lowerbound, col="blue", lty = "dashed")
+
+points((length(trainset)+1):(length(trainset)+2), 
+       modelpredictions$pred, col ="red")
+
+# Legend:
+legend("topleft", 
+  legend = c("Prediction"), 
+  col = c("red"), 
+  pch = 1, 
+  bty = "o", 
+  pt.cex = 1, 
+  cex = 1, 
+  text.col = "black", 
+  horiz = F , 
+  inset = c(0.1, 0.1))
+```
+
+```{r Compare to Observed Values}
+#Zoom in! Compare it to test set.
+
+ts.plot(testset, 
+        xlim = c(length(testset)-5, length(testset)+3), 
+        ylim = c(0.15,0.45), 
+        main = "Observed vs Forecasted Values", 
+        ylab = "3PTFGA%")
+
+# Points for observed data
+points((length(testset)+1):(length(testset)+2), 
+       thebench.ts[39:40], col ="blue")
+
+# Points for forecasted data
+points((length(testset)+1):(length(testset)+2), 
+       modelpredictions$pred, col ="red")
+
+lines((length(testset)+1): (length(testset)+2), 
+      upperbound, lty=2, col = "blue")
+
+lines((length(testset)+1): (length(testset)+2), 
+      lowerbound, lty=2, col = "blue")
+
+# Add a legend
+legend("bottomright", 
+  legend = c("Prediction", "Observed"), 
+  col = c("red", 
+  "blue"), 
+  pch = 1, 
+  bty = "o", 
+  pt.cex = 1, 
+  cex = 1, 
+  text.col = "black", 
+  horiz = F , 
+  inset = c(0.1, 0.1))
+```
+
+```{r Conclude Forecasts}
+predict(finalmod, n.ahead = 5) #Our ARIMA(0,1,2)
+library(MAPA)
+#install.packages('smooth')
+library(smooth)
+modelforecasts<-forecast(finalmod)
+library(forecast)
+autoplot(modelforecasts)
+#Our model suggests the data converges to a point! Namely, 35% 3PT FGA.
+```
