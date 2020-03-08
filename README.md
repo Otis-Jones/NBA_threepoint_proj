@@ -21,4 +21,4 @@ Summary:
 
 Future Work:
 
-![image](https://user-images.githubusercontent.com/47067688/76170737-ecb0ce00-6141-11ea-847d-41b6d436427d.png)
+
