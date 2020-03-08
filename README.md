@@ -16,6 +16,9 @@ We developed a Stochastic simulation based on the data of 3 point and two point 
 
 Key Results:
 
+<img width="460" alt="Screen Shot 2019-12-24 at 2 42 20 PM" src="https://user-images.githubusercontent.com/46733087/76170755-1ff35d00-6142-11ea-8c5c-fed41c0ec076.png">
+
+
 Summary:
 
 
