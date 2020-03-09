@@ -83,5 +83,5 @@ For our project we wanted to analyze the role that the three point shot plays in
 
 
 # Future Work:
-We plan to do further work looking at the convergence of the Stochastic Model.
+We plan to do further work looking at the convergence of the Stochastic Model. We need to compare and integrate the Stochastic Model and the Time Series.
 
